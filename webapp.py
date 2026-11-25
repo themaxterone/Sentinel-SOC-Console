@@ -487,4 +487,10 @@ def download_file(folder, filename):
     }
     if folder not in folders:
         return jsonify({"error": "File not found."}), 404
-    return send_from_directory(folders[folder], filename, as_attachment=True)
+    open_report = request.args.get("view") == "inline" and filename.lower().endswith(".html")
+    return send_from_directory(
+        folders[folder],
+        filename,
+        as_attachment=not open_report,
+        mimetype="text/html" if open_report else None,
+    )

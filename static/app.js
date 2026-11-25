@@ -2,13 +2,16 @@
   const views = [...document.querySelectorAll(".view")];
   const navLinks = [...document.querySelectorAll("[data-view]")];
   const sectionName = document.getElementById("current-section");
+  const reportDialog = document.getElementById("report-prompt");
+  const reportOpenLink = document.getElementById("report-open");
+  const reportPromptMessage = document.getElementById("report-prompt-message");
   const names = {
-    dashboard: "Resumen",
-    signins: "Auditoría de accesos",
-    risky: "Usuarios de riesgo",
+    dashboard: "Overview",
+    signins: "Sign-in audit",
+    risky: "Risky users",
     sentinel: "Sentinel / XDR",
-    ipsearch: "Inteligencia de IP",
-    keys: "Estado de API keys",
+    ipsearch: "IP intelligence",
+    keys: "API key status",
   };
   let activeJobId = null;
   let logOffset = 0;
@@ -20,7 +23,7 @@
     document.querySelectorAll(".nav-link").forEach((link) => {
       link.classList.toggle("active", link.dataset.view === name);
     });
-    sectionName.textContent = names[name] || "Resumen";
+    sectionName.textContent = names[name] || "Overview";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -37,7 +40,7 @@
 
   function setTheme(theme) {
     document.documentElement.dataset.theme = theme;
-    themeLabel.textContent = theme === "dark" ? "Modo claro" : "Modo oscuro";
+    themeLabel.textContent = theme === "dark" ? "Light mode" : "Dark mode";
     localStorage.setItem("soc-theme", theme);
   }
 
@@ -48,7 +51,7 @@
   });
 
   const today = new Date();
-  document.getElementById("today-date").textContent = new Intl.DateTimeFormat("es-ES", {
+  document.getElementById("today-date").textContent = new Intl.DateTimeFormat("en-GB", {
     weekday: "short", day: "2-digit", month: "short", year: "numeric",
   }).format(today);
 
@@ -81,8 +84,8 @@
   }
 
   function showError(message) {
-    addLog({ tag: "danger", time: new Date().toLocaleTimeString("es-ES"), message: `[!] ${message}` });
-    document.getElementById("job-status").textContent = "No se pudo iniciar la operación.";
+    addLog({ tag: "danger", time: new Date().toLocaleTimeString("en-GB"), message: `[!] ${message}` });
+    document.getElementById("job-status").textContent = "Unable to start the operation.";
     document.getElementById("activity-panel").scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
@@ -94,7 +97,7 @@
 
   async function startJob(url, options = {}) {
     if (activeJobId) {
-      showError("Ya hay una operación activa. Espera a que termine antes de iniciar otra.");
+      showError("An operation is already running. Wait for it to finish before starting another.");
       return;
     }
     try {
@@ -103,11 +106,11 @@
       document.getElementById("job-artifacts").classList.add("hidden");
       document.getElementById("job-progress").style.width = "0%";
       document.getElementById("progress-label").textContent = "0%";
-      document.getElementById("job-status").textContent = "Iniciando operación...";
+      document.getElementById("job-status").textContent = "Starting operation...";
       logOffset = 0;
       const request = await fetch(url, options);
       const payload = await request.json();
-      if (!request.ok) throw new Error(payload.error || "No se pudo iniciar la operación.");
+      if (!request.ok) throw new Error(payload.error || "Unable to start the operation.");
       activeJobId = payload.job_id;
       activeJobs += 1;
       document.getElementById("active-jobs").textContent = String(activeJobs);
@@ -123,7 +126,7 @@
     try {
       const response = await fetch(`/api/jobs/${encodeURIComponent(jobId)}?since=${logOffset}`);
       const job = await response.json();
-      if (!response.ok) throw new Error(job.error || "No se pudo consultar el progreso.");
+      if (!response.ok) throw new Error(job.error || "Unable to retrieve operation progress.");
       job.logs.forEach(addLog);
       logOffset = job.log_count;
       const percent = Math.round((job.progress || 0) * 100);
@@ -135,13 +138,14 @@
       if (job.state === "running") {
         window.setTimeout(() => pollJob(jobId), 900);
       } else {
+        promptToOpenReport(job);
         activeJobId = null;
         activeJobs = Math.max(0, activeJobs - 1);
         document.getElementById("active-jobs").textContent = String(activeJobs);
         document.getElementById("risky-audit-button").disabled = riskyAccounts.length === 0;
         setButtonsDisabled(false);
-        document.getElementById("last-result").textContent = job.state === "completed" ? "Completo" : "Error";
-        document.getElementById("last-result-time").textContent = new Date().toLocaleTimeString("es-ES");
+        document.getElementById("last-result").textContent = job.state === "completed" ? "Complete" : "Error";
+        document.getElementById("last-result-time").textContent = new Date().toLocaleTimeString("en-GB");
         if (job.state === "completed") {
           document.getElementById("job-progress").style.width = "100%";
           document.getElementById("progress-label").textContent = "100%";
@@ -161,7 +165,7 @@
     if (Array.isArray(job.result.accounts)) {
       riskyAccounts = job.result.accounts;
       const count = riskyAccounts.length;
-      document.getElementById("risky-count").textContent = `${count} cuenta${count === 1 ? "" : "s"} disponibles para auditoría.`;
+      document.getElementById("risky-count").textContent = `${count} account${count === 1 ? "" : "s"} available for audit.`;
       const list = document.getElementById("risky-account-list");
       list.replaceChildren();
       riskyAccounts.forEach((account) => {
@@ -191,7 +195,7 @@
         list.append(option);
       });
       if (workspaces.length) {
-        document.getElementById("job-status").textContent += " Selecciona un workspace sugerido en el campo.";
+        document.getElementById("job-status").textContent += " Choose a suggested workspace in the field.";
       }
     }
     if (Array.isArray(job.result.keys)) renderKeys(job.result);
@@ -211,11 +215,20 @@
     document.getElementById("job-artifacts").classList.remove("hidden");
   }
 
+  function promptToOpenReport(job) {
+    if (job.state !== "completed" || !reportDialog.showModal) return;
+    const report = job.artifacts.find((artifact) => artifact.name.toLowerCase().endsWith(".html"));
+    if (!report) return;
+    reportPromptMessage.textContent = `The HTML report "${report.name}" was generated. Would you like to open it?`;
+    reportOpenLink.href = `${report.url}?view=inline`;
+    reportDialog.showModal();
+  }
+
   function renderKeys(result) {
     document.getElementById("key-total").textContent = `${result.remaining} / ${result.limit}`;
     const usage = result.limit ? ((result.limit - result.remaining) / result.limit) * 100 : 0;
     document.getElementById("key-usage").style.width = `${Math.max(0, Math.min(100, usage))}%`;
-    document.getElementById("key-count").textContent = `${result.keys.length} claves comprobadas`;
+    document.getElementById("key-count").textContent = `${result.keys.length} keys checked`;
     const list = document.getElementById("key-results");
     list.replaceChildren();
     result.keys.forEach((key) => {
@@ -223,13 +236,13 @@
       row.className = "key-row";
       const label = document.createElement("span");
       label.className = "key-label";
-      label.textContent = `Clave #${key.index} · ${key.key}`;
+      label.textContent = `Key #${key.index} · ${key.key}`;
       const status = document.createElement("span");
       status.className = `key-state ${key.status === "Active" ? "" : "bad"}`;
       status.textContent = key.status;
       const remaining = document.createElement("span");
       remaining.className = "key-remaining";
-      remaining.textContent = `Disponibles: ${key.remaining} / ${key.limit} · Uso: ${key.used_pct} · Reinicio: ${key.reset}`;
+      remaining.textContent = `Remaining: ${key.remaining} / ${key.limit} · Used: ${key.used_pct} · Reset: ${key.reset}`;
       row.append(label, status, remaining);
       list.append(row);
     });
@@ -314,8 +327,10 @@
   document.getElementById("clear-log").addEventListener("click", () => {
     document.getElementById("job-console").replaceChildren();
     document.getElementById("job-console").innerHTML =
-      '<div class="console-empty"><span>⌁</span><strong>Consola limpia</strong><small>La próxima operación aparecerá aquí.</small></div>';
+      '<div class="console-empty"><span>⌁</span><strong>Console cleared</strong><small>The next operation will appear here.</small></div>';
   });
+  document.getElementById("report-stay").addEventListener("click", () => reportDialog.close());
+  reportOpenLink.addEventListener("click", () => reportDialog.close());
 
   const onlySidInput = document.querySelector('#signins-form input[name="only_sid"]');
   onlySidInput.addEventListener("change", () => {
@@ -323,6 +338,6 @@
     document.querySelector('#signins-form input[name="days"]').disabled = onlySid;
     document.querySelector('#signins-form input[name="use_abuse"]').disabled = onlySid;
     document.querySelector('#signins-form button[type="submit"]').innerHTML =
-      onlySid ? "Traducir SID" : "<span>▶</span> Iniciar auditoría";
+      onlySid ? "Translate SID" : "<span>▶</span> Run audit";
   });
 })();

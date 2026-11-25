@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,37 +10,37 @@
 <body>
   <div class="app-shell">
     <aside class="sidebar">
-      <a class="brand" href="#" data-view-link="dashboard" aria-label="Ir al inicio">
+      <a class="brand" href="#" data-view-link="dashboard" aria-label="Go to overview">
         <span class="brand-mark">S</span>
         <span><strong>Sentinel SOC</strong><small>SECURITY OPERATIONS</small></span>
       </a>
       <div class="workspace-label">WORKSPACE</div>
-      <div class="workspace-chip"><span class="pulse"></span> Operaciones de seguridad</div>
-      <nav class="navigation" aria-label="Navegación principal">
-        <button class="nav-link active" data-view="dashboard"><span class="nav-icon">⌂</span> Resumen</button>
-        <div class="nav-heading">INVESTIGACIÓN</div>
-        <button class="nav-link" data-view="signins"><span class="nav-icon">◷</span> Auditoría de accesos</button>
-        <button class="nav-link" data-view="risky"><span class="nav-icon">△</span> Usuarios de riesgo</button>
+      <div class="workspace-chip"><span class="pulse"></span> Security operations</div>
+      <nav class="navigation" aria-label="Main navigation">
+        <button class="nav-link active" data-view="dashboard"><span class="nav-icon">⌂</span> Overview</button>
+        <div class="nav-heading">INVESTIGATE</div>
+        <button class="nav-link" data-view="signins"><span class="nav-icon">◷</span> Sign-in audit</button>
+        <button class="nav-link" data-view="risky"><span class="nav-icon">△</span> Risky users</button>
         <button class="nav-link" data-view="sentinel"><span class="nav-icon">⌕</span> Sentinel / XDR</button>
-        <button class="nav-link" data-view="ipsearch"><span class="nav-icon">◎</span> Inteligencia de IP</button>
-        <div class="nav-heading">CONFIGURACIÓN</div>
-        <button class="nav-link" data-view="keys"><span class="nav-icon">▤</span> Estado de API keys</button>
+        <button class="nav-link" data-view="ipsearch"><span class="nav-icon">◎</span> IP intelligence</button>
+        <div class="nav-heading">SETTINGS</div>
+        <button class="nav-link" data-view="keys"><span class="nav-icon">▤</span> API key status</button>
       </nav>
       <div class="sidebar-footer">
         <span class="status-dot"></span>
-        <span><strong>Consola local</strong><small>Sesión privada en este equipo</small></span>
+        <span><strong>Local console</strong><small>Private session on this device</small></span>
       </div>
     </aside>
 
     <main class="main-content">
       <header class="topbar">
-        <div class="breadcrumbs"><span>Security Operations</span><span class="crumb-divider">/</span><strong id="current-section">Resumen</strong></div>
+        <div class="breadcrumbs"><span>Security Operations</span><span class="crumb-divider">/</span><strong id="current-section">Overview</strong></div>
         <div class="topbar-actions">
-          <div class="system-status"><span class="status-dot"></span> Sistema listo</div>
-          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Cambiar tema">
-            <span class="theme-icon">◐</span><span id="theme-label">Modo oscuro</span>
+          <div class="system-status"><span class="status-dot"></span> System ready</div>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">
+            <span class="theme-icon">◐</span><span id="theme-label">Dark mode</span>
           </button>
-          <div class="avatar" title="Analista SOC">SOC</div>
+          <div class="avatar" title="SOC analyst">SOC</div>
         </div>
       </header>
 
@@ -48,143 +48,152 @@
         <section class="view active" id="view-dashboard">
           <div class="welcome-row">
             <div>
-              <div class="eyebrow"><span class="live-pill"><i></i> OPERACIONES</span> &nbsp;·&nbsp; CONSOLA EMPRESARIAL</div>
-              <h1>Centro de operaciones</h1>
-              <p class="lead">Investigación de identidades, hunting y reputación de amenazas desde un único espacio.</p>
+              <div class="eyebrow"><span class="live-pill"><i></i> OPERATIONS</span> &nbsp;·&nbsp; ENTERPRISE CONSOLE</div>
+              <h1>SOC operations center</h1>
+              <p class="lead">Investigate identities, hunt threats, and review IP reputation in one place.</p>
             </div>
-            <div class="date-card"><span class="date-icon">▦</span><span><small>FECHA LOCAL</small><strong id="today-date">—</strong></span></div>
+            <div class="date-card"><span class="date-icon">▦</span><span><small>LOCAL DATE</small><strong id="today-date">—</strong></span></div>
           </div>
 
           <div class="metric-grid">
-            <article class="metric-card"><div class="metric-top"><span>Herramientas</span><span class="metric-icon blue">⌘</span></div><strong>05</strong><small>módulos disponibles</small></article>
-            <article class="metric-card"><div class="metric-top"><span>Trabajos activos</span><span class="metric-icon purple">◷</span></div><strong id="active-jobs">0</strong><small>en esta sesión</small></article>
-            <article class="metric-card"><div class="metric-top"><span>Último resultado</span><span class="metric-icon green">✓</span></div><strong id="last-result">—</strong><small id="last-result-time">Sin actividad todavía</small></article>
-            <article class="metric-card"><div class="metric-top"><span>Conectividad</span><span class="metric-icon cyan">⌁</span></div><strong class="metric-ready">Local</strong><small>servicios externos bajo demanda</small></article>
+            <article class="metric-card"><div class="metric-top"><span>Tools</span><span class="metric-icon blue">⌘</span></div><strong>05</strong><small>available modules</small></article>
+            <article class="metric-card"><div class="metric-top"><span>Active jobs</span><span class="metric-icon purple">◷</span></div><strong id="active-jobs">0</strong><small>in this session</small></article>
+            <article class="metric-card"><div class="metric-top"><span>Latest result</span><span class="metric-icon green">✓</span></div><strong id="last-result">—</strong><small id="last-result-time">No activity yet</small></article>
+            <article class="metric-card"><div class="metric-top"><span>Connectivity</span><span class="metric-icon cyan">⌁</span></div><strong class="metric-ready">Local</strong><small>external services on demand</small></article>
           </div>
 
           <div class="section-heading">
-            <div><h2>Herramientas SOC</h2><p>Acceso rápido a los flujos de investigación.</p></div>
-            <span class="subtle-tag">5 MÓDULOS</span>
+            <div><h2>SOC tools</h2><p>Quick access to investigation workflows.</p></div>
+            <span class="subtle-tag">5 MODULES</span>
           </div>
           <div class="tool-grid">
-            <button class="tool-card" data-view="signins"><span class="tool-icon blue">◷</span><span class="tool-copy"><strong>Auditoría de accesos</strong><small>Microsoft Entra ID · Graph</small></span><span class="tool-arrow">↗</span></button>
-            <button class="tool-card" data-view="risky"><span class="tool-icon red">△</span><span class="tool-copy"><strong>Usuarios de riesgo</strong><small>Identity Protection</small></span><span class="tool-arrow">↗</span></button>
-            <button class="tool-card" data-view="sentinel"><span class="tool-icon purple">⌕</span><span class="tool-copy"><strong>Sentinel / XDR</strong><small>Hunting KQL y workspaces</small></span><span class="tool-arrow">↗</span></button>
-            <button class="tool-card" data-view="ipsearch"><span class="tool-icon orange">◎</span><span class="tool-copy"><strong>Inteligencia de IP</strong><small>AbuseIPDB · Intigriti · Sentinel</small></span><span class="tool-arrow">↗</span></button>
-            <button class="tool-card" data-view="keys"><span class="tool-icon green">▤</span><span class="tool-copy"><strong>Estado de API keys</strong><small>Cuotas de AbuseIPDB</small></span><span class="tool-arrow">↗</span></button>
+            <button class="tool-card" data-view="signins"><span class="tool-icon blue">◷</span><span class="tool-copy"><strong>Sign-in audit</strong><small>Microsoft Entra ID · Graph</small></span><span class="tool-arrow">↗</span></button>
+            <button class="tool-card" data-view="risky"><span class="tool-icon red">△</span><span class="tool-copy"><strong>Risky users</strong><small>Identity Protection</small></span><span class="tool-arrow">↗</span></button>
+            <button class="tool-card" data-view="sentinel"><span class="tool-icon purple">⌕</span><span class="tool-copy"><strong>Sentinel / XDR</strong><small>KQL hunting and workspaces</small></span><span class="tool-arrow">↗</span></button>
+            <button class="tool-card" data-view="ipsearch"><span class="tool-icon orange">◎</span><span class="tool-copy"><strong>IP intelligence</strong><small>AbuseIPDB · Intigriti · Sentinel</small></span><span class="tool-arrow">↗</span></button>
+            <button class="tool-card" data-view="keys"><span class="tool-icon green">▤</span><span class="tool-copy"><strong>API key status</strong><small>AbuseIPDB quotas</small></span><span class="tool-arrow">↗</span></button>
           </div>
 
-          <div class="notice-card"><span class="notice-icon">i</span><div><strong>Conexiones seguras y controladas</strong><p>Las consultas se ejecutan desde este equipo. Microsoft, Sentinel y los servicios de inteligencia solo se contactan al iniciar una acción.</p></div></div>
+          <div class="notice-card"><span class="notice-icon">i</span><div><strong>Controlled, local operations</strong><p>Queries run from this device. Microsoft, Sentinel, and threat intelligence services are contacted only when you start an action.</p></div></div>
         </section>
 
         <section class="view" id="view-signins">
-          <div class="page-heading"><div><div class="eyebrow">INVESTIGACIÓN DE IDENTIDADES</div><h1>Auditoría de accesos</h1><p class="lead">Consulta inicios de sesión, traduce SIDs y enriquece direcciones IP.</p></div><span class="page-badge">MICROSOFT GRAPH</span></div>
+          <div class="page-heading"><div><div class="eyebrow">IDENTITY INVESTIGATION</div><h1>Sign-in audit</h1><p class="lead">Query sign-ins, translate SIDs, and enrich IP addresses.</p></div><span class="page-badge">MICROSOFT GRAPH</span></div>
           <form class="panel form-panel" id="signins-form">
-            <div class="panel-title"><span class="step-number">01</span><div><h2>Parámetros de auditoría</h2><p>Indica una cuenta o una lista para analizar.</p></div></div>
+            <div class="panel-title"><span class="step-number">01</span><div><h2>Audit parameters</h2><p>Choose an account or a list to investigate.</p></div></div>
             <div class="field-grid two">
-              <label class="field"><span>Tipo de búsqueda</span><select name="mode" id="signin-mode"><option value="single">Una cuenta</option><option value="bulk">Lista de cuentas</option></select></label>
-              <label class="field"><span>Workspace GUID <em>opcional · fallback Sentinel</em></span><input name="workspace" value="{{ workspace }}" placeholder="GUID del workspace"></label>
+              <label class="field"><span>Search type</span><select name="mode" id="signin-mode"><option value="single">Single account</option><option value="bulk">Account list</option></select></label>
+              <label class="field"><span>Workspace GUID <em>optional · Sentinel fallback</em></span><input name="workspace" value="{{ workspace }}" placeholder="Workspace GUID"></label>
             </div>
-            <label class="field" id="signin-single-field"><span>UPN corporativo o SID</span><input name="target" placeholder="usuario@empresa.com o S-1-5-21-..." value="user@company.com"></label>
+            <label class="field" id="signin-single-field"><span>Corporate UPN or SID</span><input name="target" placeholder="user@company.com or S-1-5-21-..." value="user@company.com"></label>
             <div class="field hidden" id="signin-bulk-fields">
-              <span>Archivo .txt o lista de cuentas</span>
+              <span>.txt file or account list</span>
               <input type="file" id="signin-file" accept=".txt,text/plain">
               <textarea name="targets" rows="4" placeholder="usuario1@empresa.com&#10;S-1-5-21-..."></textarea>
-              <small class="field-hint">Puedes subir un .txt o pegar UPNs/SIDs; se eliminarán duplicados.</small>
+              <small class="field-hint">Upload a .txt file or paste UPNs/SIDs; duplicates are removed.</small>
             </div>
             <div class="field-grid two compact-fields">
-              <label class="field"><span>Ventana de consulta <em>días</em></span><input name="days" type="number" value="15" min="0"></label>
-              <div class="field"><span>Opciones</span>
-                <label class="check-row"><input type="checkbox" name="use_abuse" checked><span>Enriquecer IPs con AbuseIPDB</span></label>
-                <label class="check-row"><input type="checkbox" name="only_sid"><span>Solo traducir SID a UPN</span></label>
+              <label class="field"><span>Query window <em>days</em></span><input name="days" type="number" value="15" min="0"></label>
+              <div class="field"><span>Options</span>
+                <label class="check-row"><input type="checkbox" name="use_abuse" checked><span>Enrich IPs with AbuseIPDB</span></label>
+                <label class="check-row"><input type="checkbox" name="only_sid"><span>Translate SID to UPN only</span></label>
               </div>
             </div>
-            <div class="form-actions"><span class="form-note">Autenticación interactiva de Microsoft al ejecutar.</span><button class="button primary" type="submit"><span>▶</span> Iniciar auditoría</button></div>
+            <div class="form-actions"><span class="form-note">Interactive Microsoft authentication starts when you run the audit.</span><button class="button primary" type="submit"><span>▶</span> Run audit</button></div>
           </form>
         </section>
 
         <section class="view" id="view-risky">
-          <div class="page-heading"><div><div class="eyebrow">IDENTITY PROTECTION</div><h1>Usuarios de riesgo</h1><p class="lead">Detecta cuentas activas en riesgo y lanza una auditoría de sus accesos.</p></div><span class="page-badge risk-badge">RIESGO DE IDENTIDAD</span></div>
+          <div class="page-heading"><div><div class="eyebrow">IDENTITY PROTECTION</div><h1>Risky users</h1><p class="lead">Find accounts at risk and audit their sign-in activity.</p></div><span class="page-badge risk-badge">IDENTITY RISK</span></div>
           <form class="panel form-panel" id="risky-scan-form">
-            <div class="panel-title"><span class="step-number">01</span><div><h2>Escanear cuentas</h2><p>Filtra por nivel de riesgo y fecha de actualización.</p></div></div>
+            <div class="panel-title"><span class="step-number">01</span><div><h2>Scan accounts</h2><p>Filter by risk level and last updated date.</p></div></div>
             <div class="field-grid two">
-              <label class="field"><span>Nivel de riesgo</span><select name="level"><option>High</option><option>Medium</option><option>Low</option><option>All</option></select></label>
-              <label class="field"><span>Actualizado en los últimos <em>0 = todo el histórico</em></span><input name="updated_days" type="number" min="0" value="7"></label>
+              <label class="field"><span>Risk level</span><select name="level"><option>High</option><option>Medium</option><option>Low</option><option>All</option></select></label>
+              <label class="field"><span>Updated within <em>0 = all time</em></span><input name="updated_days" type="number" min="0" value="7"></label>
             </div>
-            <div class="form-actions"><span class="form-note">Permisos Graph de Identity Protection requeridos.</span><button class="button primary" type="submit">Escanear usuarios</button></div>
+            <div class="form-actions"><span class="form-note">Microsoft Graph Identity Protection permissions required.</span><button class="button primary" type="submit">Scan risky users</button></div>
           </form>
           <div class="panel audit-panel">
-            <div class="panel-title"><span class="step-number muted-step">02</span><div><h2>Auditar accesos detectados</h2><p id="risky-count">Primero ejecuta un escaneo para cargar las cuentas.</p></div></div>
+            <div class="panel-title"><span class="step-number muted-step">02</span><div><h2>Audit detected sign-ins</h2><p id="risky-count">Run a scan first to load accounts.</p></div></div>
             <div class="field-grid two">
-              <label class="field"><span>Ventana de inicios de sesión <em>días</em></span><input id="risky-audit-days" type="number" min="0" value="15"></label>
-              <label class="check-row audit-check"><input id="risky-use-abuse" type="checkbox" checked><span>Enriquecer IPs con AbuseIPDB</span></label>
+              <label class="field"><span>Sign-in window <em>days</em></span><input id="risky-audit-days" type="number" min="0" value="15"></label>
+              <label class="check-row audit-check"><input id="risky-use-abuse" type="checkbox" checked><span>Enrich IPs with AbuseIPDB</span></label>
             </div>
-            <div class="form-actions"><span class="form-note">Genera informes unificados HTML y CSV.</span><button class="button secondary" id="risky-audit-button" type="button" disabled>Auditar usuarios detectados</button></div>
+            <div class="form-actions"><span class="form-note">Creates unified HTML and CSV reports.</span><button class="button secondary" id="risky-audit-button" type="button" disabled>Audit detected users</button></div>
             <div class="account-list hidden" id="risky-account-list"></div>
           </div>
         </section>
 
         <section class="view" id="view-sentinel">
-          <div class="page-heading"><div><div class="eyebrow">THREAT HUNTING</div><h1>Sentinel / XDR</h1><p class="lead">Ejecuta consultas KQL en Log Analytics o Microsoft Defender XDR.</p></div><span class="page-badge">KQL QUERY RUNNER</span></div>
+          <div class="page-heading"><div><div class="eyebrow">THREAT HUNTING</div><h1>Sentinel / XDR</h1><p class="lead">Run KQL queries in Log Analytics or Microsoft Defender XDR.</p></div><span class="page-badge">KQL QUERY RUNNER</span></div>
           <form class="panel form-panel" id="sentinel-form">
-            <div class="panel-title"><span class="step-number">01</span><div><h2>Configurar hunting</h2><p>Selecciona el motor y define la consulta KQL.</p></div></div>
+            <div class="panel-title"><span class="step-number">01</span><div><h2>Configure hunting</h2><p>Select an engine and enter a KQL query.</p></div></div>
             <div class="field-grid engine-grid">
-              <label class="field"><span>Motor de consulta</span><select name="engine" id="sentinel-engine"><option>Sentinel Workspace</option><option>Defender XDR (Graph)</option></select></label>
-              <label class="field" id="workspace-field"><span>Workspace GUID</span><div class="inline-field"><input name="workspace" id="sentinel-workspace" value="{{ workspace }}" placeholder="GUID o workspace descubierto"><button class="button secondary compact" id="discover-workspaces" type="button">Descubrir</button></div></label>
+              <label class="field"><span>Query engine</span><select name="engine" id="sentinel-engine"><option>Sentinel Workspace</option><option>Defender XDR (Graph)</option></select></label>
+              <label class="field" id="workspace-field"><span>Workspace GUID</span><div class="inline-field"><input name="workspace" id="sentinel-workspace" value="{{ workspace }}" placeholder="GUID or discovered workspace"><button class="button secondary compact" id="discover-workspaces" type="button">Discover</button></div></label>
             </div>
-            <label class="field"><span>Consulta KQL</span><textarea name="kql" id="kql-query" rows="8" spellcheck="false">SigninLogs
+            <label class="field"><span>KQL query</span><textarea name="kql" id="kql-query" rows="8" spellcheck="false">SigninLogs
 | where TimeGenerated > ago(7d)
 | where ResultType != 0
 | project TimeGenerated, UserPrincipalName, AppDisplayName, IPAddress, ResultType, ResultDescription
 | take 50</textarea></label>
-            <div class="field option-field"><label class="check-row"><input type="checkbox" name="use_abuse" checked><span>Detectar y enriquecer IPs públicas con AbuseIPDB</span></label></div>
-            <div class="form-actions"><span class="form-note">Los resultados se exportan como HTML y CSV.</span><button class="button primary" type="submit"><span>▶</span> Ejecutar consulta</button></div>
+            <div class="field option-field"><label class="check-row"><input type="checkbox" name="use_abuse" checked><span>Detect and enrich public IPs with AbuseIPDB</span></label></div>
+            <div class="form-actions"><span class="form-note">Results are exported as HTML and CSV.</span><button class="button primary" type="submit"><span>▶</span> Run query</button></div>
           </form>
         </section>
 
         <section class="view" id="view-ipsearch">
-          <div class="page-heading"><div><div class="eyebrow">THREAT INTELLIGENCE</div><h1>Inteligencia de IP</h1><p class="lead">Analiza IPs individuales, listas o indicadores desde Sentinel.</p></div><span class="page-badge intel-badge">ABUSEIPDB · INTIGRITI</span></div>
+          <div class="page-heading"><div><div class="eyebrow">THREAT INTELLIGENCE</div><h1>IP intelligence</h1><p class="lead">Analyze individual IPs, lists, or indicators from Sentinel.</p></div><span class="page-badge intel-badge">ABUSEIPDB · INTIGRITI</span></div>
           <form class="panel form-panel" id="ipsearch-form">
-            <div class="panel-title"><span class="step-number">01</span><div><h2>Fuente de indicadores</h2><p>Selecciona el origen de las direcciones que quieres revisar.</p></div></div>
+            <div class="panel-title"><span class="step-number">01</span><div><h2>Indicator source</h2><p>Choose where to get the IP addresses to check.</p></div></div>
             <div class="mode-cards">
-              <label class="mode-card selected"><input type="radio" name="mode" value="single" checked><span class="mode-icon">◎</span><strong>IP individual</strong><small>Consulta puntual</small></label>
-              <label class="mode-card"><input type="radio" name="mode" value="bulk"><span class="mode-icon">▤</span><strong>Lista .txt</strong><small>Análisis masivo</small></label>
-              <label class="mode-card"><input type="radio" name="mode" value="sentinel"><span class="mode-icon">⌕</span><strong>Weekly PaloAlto IPS</strong><small>Consulta Sentinel KQL</small></label>
+              <label class="mode-card selected"><input type="radio" name="mode" value="single" checked><span class="mode-icon">◎</span><strong>Single IP</strong><small>Quick lookup</small></label>
+              <label class="mode-card"><input type="radio" name="mode" value="bulk"><span class="mode-icon">▤</span><strong>.txt list</strong><small>Bulk analysis</small></label>
+              <label class="mode-card"><input type="radio" name="mode" value="sentinel"><span class="mode-icon">⌕</span><strong>Weekly PaloAlto IPS</strong><small>Sentinel KQL query</small></label>
             </div>
-            <label class="field" id="ip-single-field"><span>Dirección IP</span><input name="target" value="8.8.8.8" placeholder="8.8.8.8"></label>
-            <div class="field hidden" id="ip-bulk-field"><span>Archivo .txt con IPs</span><input type="file" name="file" accept=".txt,text/plain"><small class="field-hint">Los duplicados se eliminan antes de consultar.</small></div>
+            <label class="field" id="ip-single-field"><span>IP address</span><input name="target" value="8.8.8.8" placeholder="8.8.8.8"></label>
+            <div class="field hidden" id="ip-bulk-field"><span>.txt file with IPs</span><input type="file" name="file" accept=".txt,text/plain"><small class="field-hint">Duplicates are removed before lookup.</small></div>
             <div class="field-grid two hidden" id="ip-sentinel-fields">
-              <label class="field"><span>Workspace GUID</span><input name="workspace" id="ip-workspace" value="{{ workspace }}" placeholder="GUID del workspace"></label>
-              <label class="field"><span>Ventana de búsqueda <em>días</em></span><input name="sentinel_days" type="number" value="30" min="1"></label>
+              <label class="field"><span>Workspace GUID</span><input name="workspace" id="ip-workspace" value="{{ workspace }}" placeholder="Workspace GUID"></label>
+              <label class="field"><span>Lookback window <em>days</em></span><input name="sentinel_days" type="number" value="30" min="1"></label>
             </div>
-            <div class="field option-field"><label class="check-row"><input type="checkbox" name="use_intigriti" checked><span>Comprobar Intigriti primero y omitir puntuación AbuseIPDB ≤ 10%</span></label></div>
-            <div class="form-actions"><span class="form-note">En listas, exporta informe, CSV y blocklist TXT.</span><button class="button primary" type="submit"><span>⌕</span> Buscar inteligencia</button></div>
+            <div class="field option-field"><label class="check-row"><input type="checkbox" name="use_intigriti" checked><span>Check Intigriti first; exclude AbuseIPDB scores ≤ 10%</span></label></div>
+            <div class="form-actions"><span class="form-note">Bulk searches export a report, CSV, and blocklist TXT.</span><button class="button primary" type="submit"><span>⌕</span> Search IP intelligence</button></div>
           </form>
         </section>
 
         <section class="view" id="view-keys">
-          <div class="page-heading"><div><div class="eyebrow">INTEGRACIONES</div><h1>Estado de API keys</h1><p class="lead">Comprueba disponibilidad y cuota de las claves configuradas de AbuseIPDB.</p></div><span class="page-badge">API HEALTH</span></div>
+          <div class="page-heading"><div><div class="eyebrow">INTEGRATIONS</div><h1>API key status</h1><p class="lead">Check availability and quota for configured AbuseIPDB keys.</p></div><span class="page-badge">API HEALTH</span></div>
           <div class="panel key-panel">
-            <div class="key-intro"><span class="tool-icon green large">▤</span><div><h2>Pool de AbuseIPDB</h2><p>Las claves se consultan en paralelo. Se muestran parcialmente ocultas.</p></div><button class="button primary" id="check-keys" type="button">Actualizar claves</button></div>
-            <div class="key-summary"><span>CONSULTAS DISPONIBLES</span><strong id="key-total">—</strong><div class="key-track"><span id="key-usage"></span></div><small id="key-count">Ejecuta una comprobación para ver el estado.</small></div>
+            <div class="key-intro"><span class="tool-icon green large">▤</span><div><h2>AbuseIPDB key pool</h2><p>Keys are checked in parallel and shown partially masked.</p></div><button class="button primary" id="check-keys" type="button">Refresh keys</button></div>
+            <div class="key-summary"><span>AVAILABLE QUERIES</span><strong id="key-total">—</strong><div class="key-track"><span id="key-usage"></span></div><small id="key-count">Run a check to see key status.</small></div>
             <div class="key-results" id="key-results"></div>
           </div>
-          <div class="notice-card"><span class="notice-icon">i</span><div><strong>Configuración de credenciales</strong><p>AbuseIPDB_API_KEYS se define en soc_core.py; INTIGRITI_ACCESS_TOKEN se lee desde el entorno. No compartas ni publiques archivos que contengan claves reales.</p></div></div>
+          <div class="notice-card"><span class="notice-icon">i</span><div><strong>Credential configuration</strong><p>ABUSEIPDB_API_KEYS is defined in soc_core.py; INTIGRITI_ACCESS_TOKEN is read from the environment. Do not share or publish files containing real keys.</p></div></div>
         </section>
 
         <section class="panel activity-panel" id="activity-panel">
           <div class="activity-header">
-            <div><div class="activity-title"><span class="activity-indicator"></span><h2>Actividad de la operación</h2></div><p id="job-status">En espera de una operación.</p></div>
-            <div class="activity-actions"><span class="progress-label" id="progress-label">0%</span><button class="text-button" id="clear-log" type="button">Limpiar</button></div>
+            <div><div class="activity-title"><span class="activity-indicator"></span><h2>Operation activity</h2></div><p id="job-status">Waiting for an operation.</p></div>
+            <div class="activity-actions"><span class="progress-label" id="progress-label">0%</span><button class="text-button" id="clear-log" type="button">Clear</button></div>
           </div>
           <div class="progress-track"><span id="job-progress"></span></div>
-          <div class="console" id="job-console" aria-live="polite"><div class="console-empty"><span>⌁</span><strong>Sin actividad reciente</strong><small>Inicia una consulta para ver el progreso y los eventos.</small></div></div>
-          <div class="artifacts hidden" id="job-artifacts"><span class="artifact-label">INFORMES GENERADOS</span><div id="artifact-links"></div></div>
+          <div class="console" id="job-console" aria-live="polite"><div class="console-empty"><span>⌁</span><strong>No recent activity</strong><small>Start a query to view progress and events.</small></div></div>
+          <div class="artifacts hidden" id="job-artifacts"><span class="artifact-label">GENERATED REPORTS</span><div id="artifact-links"></div></div>
         </section>
       </div>
-      <footer class="footer"><span>Sentinel SOC Console <span class="footer-version">· Web Edition</span></span><span>Interfaz local · Acceso restringido al equipo</span></footer>
+      <footer class="footer"><span>Sentinel SOC Console <span class="footer-version">· Web Edition</span></span><span>Local interface · Device-only access</span></footer>
     </main>
   </div>
+  <dialog class="report-dialog" id="report-prompt" aria-labelledby="report-prompt-title">
+    <div class="report-dialog-icon">✓</div>
+    <h2 id="report-prompt-title">Analysis complete</h2>
+    <p id="report-prompt-message">An HTML report was generated. Would you like to open it?</p>
+    <div class="report-dialog-actions">
+      <button class="button secondary" id="report-stay" type="button">Stay here</button>
+      <a class="button primary" id="report-open" href="#" target="_blank" rel="noopener">Open report</a>
+    </div>
+  </dialog>
   <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </body>
 </html>

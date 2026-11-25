@@ -1,10 +1,10 @@
 # Sentinel SOC Console
 
-Interfaz web local para las funciones de investigación de `gui-soc.py`: auditoría de inicios de sesión, usuarios de riesgo, consultas KQL en Sentinel y Defender XDR, búsqueda de reputación IP, exportación de informes y estado de las API keys.
+A local web console for the investigation workflows in `gui-soc.py`: sign-in auditing, risky users, Sentinel and Defender XDR KQL queries, IP reputation searches, report exports, and API key status.
 
-## Inicio
+## Getting started
 
-Requiere Python 3.10 o posterior. Con Conda, crea un entorno aislado e instala las dependencias así:
+Requires Python 3.10 or later. With Conda, create an isolated environment and install the dependencies:
 
 ```powershell
 conda create -n gui-soc --override-channels -c conda-forge python=3.12 pip
@@ -13,27 +13,27 @@ python -m pip install -r requirements.txt
 python gui-soc.py
 ```
 
-Abre `http://127.0.0.1:5000` en el navegador. El servidor escucha solo en la interfaz local del equipo.
+Open `http://127.0.0.1:5000` in your browser. The server listens only on the local machine.
 
-## Credenciales
+## Credentials
 
-Las claves de AbuseIPDB se configuran directamente en la lista `ABUSEIPDB_API_KEYS` de `soc_core.py`. Añade cada clave como una cadena entre comillas, separada por comas. `INTIGRITI_ACCESS_TOKEN` continúa leyéndose desde una variable de entorno:
+AbuseIPDB keys are configured in the `ABUSEIPDB_API_KEYS` list in `soc_core.py`. Add each key as a quoted string, separated by commas. `INTIGRITI_ACCESS_TOKEN` is still read from an environment variable:
 
 ```powershell
-$env:INTIGRITI_ACCESS_TOKEN = "token"
+$env:INTIGRITI_ACCESS_TOKEN = "your-token"
 python gui-soc.py
 ```
 
-Las claves escritas en el código quedan en texto claro. No publiques ni compartas `soc_core.py` mientras contenga credenciales reales.
+Keys stored in source code are plain text. Do not publish or share `soc_core.py` while it contains real credentials.
 
-La autenticación de Microsoft se realiza interactivamente al iniciar una consulta. Las acciones de Graph, Azure Log Analytics y Defender XDR requieren permisos y acceso a los recursos correspondientes. El workspace Sentinel puede configurarse desde la interfaz o descubrirse con la cuenta autenticada.
+Microsoft authentication is interactive when a query starts. Microsoft Graph, Azure Log Analytics, and Defender XDR actions require the appropriate permissions and resource access. Configure a Sentinel workspace in the interface or discover one with the authenticated account.
 
-## Módulos
+## Modules
 
-- **Auditoría de accesos:** consulta individual o masiva de UPN/SID, traducción SID y enriquecimiento AbuseIPDB; contempla el fallback a Sentinel cuando Graph aplica rate limit.
-- **Usuarios de riesgo:** escaneo por nivel y antigüedad, seguido de auditoría de inicios de sesión de las cuentas detectadas.
-- **Sentinel / XDR:** descubrimiento de workspaces y ejecución de KQL en Sentinel o Defender XDR, con enriquecimiento opcional de IPs.
-- **Inteligencia de IP:** consulta individual, archivo de IPs o búsqueda semanal PaloAlto IPS; conserva filtros Intigriti y exportaciones HTML, CSV y blocklist.
-- **Estado de API keys:** comprobación paralela de cuotas AbuseIPDB con claves enmascaradas.
+- **Sign-in audit:** single or bulk UPN/SID queries, SID translation, AbuseIPDB enrichment, and Sentinel fallback when Graph rate limits apply.
+- **Risky users:** scan by risk level and age, then audit sign-in activity for the discovered accounts.
+- **Sentinel / XDR:** discover workspaces and run KQL in Sentinel or Defender XDR, with optional IP enrichment.
+- **IP intelligence:** single IP, text-file, or weekly PaloAlto IPS searches; Intigriti filters and HTML, CSV, and blocklist exports.
+- **API key status:** concurrent AbuseIPDB quota checks with masked keys.
 
-Los informes se guardan en `signInsLogs`, `sentinelLogs` y `abuseIpLogs`. El tema claro/oscuro se recuerda en el navegador.
+Reports are saved to `signInsLogs`, `sentinelLogs`, and `abuseIpLogs`. The light/dark theme preference is saved in the browser.
