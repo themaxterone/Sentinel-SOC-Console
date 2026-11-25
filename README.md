@@ -17,13 +17,14 @@ Abre `http://127.0.0.1:5000` en el navegador. El servidor escucha solo en la int
 
 ## Credenciales
 
-Configura las claves como variables de entorno antes de iniciar la aplicación. No las guardes en el repositorio.
+Las claves de AbuseIPDB se configuran directamente en la lista `ABUSEIPDB_API_KEYS` de `soc_core.py`. Añade cada clave como una cadena entre comillas, separada por comas. `INTIGRITI_ACCESS_TOKEN` continúa leyéndose desde una variable de entorno:
 
 ```powershell
-$env:ABUSEIPDB_API_KEYS = "clave1,clave2"
 $env:INTIGRITI_ACCESS_TOKEN = "token"
 python gui-soc.py
 ```
+
+Las claves escritas en el código quedan en texto claro. No publiques ni compartas `soc_core.py` mientras contenga credenciales reales.
 
 La autenticación de Microsoft se realiza interactivamente al iniciar una consulta. Las acciones de Graph, Azure Log Analytics y Defender XDR requieren permisos y acceso a los recursos correspondientes. El workspace Sentinel puede configurarse desde la interfaz o descubrirse con la cuenta autenticada.
 

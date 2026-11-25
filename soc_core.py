@@ -60,9 +60,7 @@ INTIGRITI_API_URL = "https://api.intigriti.com/external/company/v2/iplookup"
 
 # AbuseIPDB API Keys Pool
 ABUSEIPDB_API_KEYS = [
-    key.strip()
-    for key in os.environ.get("23e158b28e1c2c150e523a2ed0239d69b767b871ff6a4ccd9da5dd39f1d80f05b6fb5634a1f45619", "").split(",")
-    if key.strip()
+    "23e158b28e1c2c150e523a2ed0239d69b767b871ff6a4ccd9da5dd39f1d80f05b6fb5634a1f45619",
 ]
 # =========================================================================
 
