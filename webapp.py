@@ -6,7 +6,7 @@ import threading
 import time
 import uuid
 from datetime import datetime
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
 from flask import Flask, jsonify, render_template, request, send_from_directory
 from werkzeug.utils import secure_filename
@@ -78,7 +78,7 @@ class Job:
                         files.append({
                             "name": filename,
                             "folder": folder_name,
-                            "url": f"/api/files/{folder_name}/{filename}",
+                            "url": f"/api/files/{folder_name}/{quote(filename, safe='')}",
                         })
             except OSError:
                 continue
@@ -476,6 +476,33 @@ def get_job(job_id):
     except ValueError:
         return jsonify({"error": "Invalid log offset."}), 400
     return jsonify(job.snapshot(since))
+
+
+@app.get("/api/reports")
+def list_reports():
+    folders = {
+        "signins": DIR_SIGNINS,
+        "sentinel": DIR_SENTINEL,
+        "abuseip": DIR_ABUSEIP,
+    }
+    reports = []
+    for folder, directory in folders.items():
+        for filename in os.listdir(directory):
+            if not filename.lower().endswith(".html"):
+                continue
+            path = os.path.join(directory, filename)
+            if not os.path.isfile(path):
+                continue
+            modified_timestamp = os.path.getmtime(path)
+            modified = datetime.fromtimestamp(modified_timestamp).astimezone()
+            reports.append((modified_timestamp, {
+                "name": filename,
+                "folder": folder,
+                "modified": modified.isoformat(),
+                "url": f"/api/files/{folder}/{quote(filename, safe='')}",
+            }))
+    reports.sort(key=lambda item: item[0], reverse=True)
+    return jsonify({"reports": [report for _, report in reports]})
 
 
 @app.get("/api/files/<folder>/<path:filename>")

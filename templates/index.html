@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>Sentinel SOC | Security Operations</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -23,6 +24,8 @@
         <button class="nav-link" data-view="risky"><span class="nav-icon">△</span> Risky users</button>
         <button class="nav-link" data-view="sentinel"><span class="nav-icon">⌕</span> Sentinel / XDR</button>
         <button class="nav-link" data-view="ipsearch"><span class="nav-icon">◎</span> IP intelligence</button>
+        <div class="nav-heading">REPORTING</div>
+        <button class="nav-link" data-view="reports"><span class="nav-icon">▣</span> Reports</button>
         <div class="nav-heading">SETTINGS</div>
         <button class="nav-link" data-view="keys"><span class="nav-icon">▤</span> API key status</button>
       </nav>
@@ -172,6 +175,24 @@
           <div class="notice-card"><span class="notice-icon">i</span><div><strong>Credential configuration</strong><p>ABUSEIPDB_API_KEYS is defined in soc_core.py; INTIGRITI_ACCESS_TOKEN is read from the environment. Do not share or publish files containing real keys.</p></div></div>
         </section>
 
+        <section class="view" id="view-reports">
+          <div class="page-heading"><div><div class="eyebrow">REPORTING</div><h1>Reports</h1><p class="lead">Browse, preview, and download generated SOC reports.</p></div><button class="button secondary" id="refresh-reports" type="button">Refresh list</button></div>
+          <div class="report-layout">
+            <section class="panel report-library">
+              <div class="report-library-heading"><div><h2>Saved reports</h2><p id="report-count">Loading reports...</p></div></div>
+              <div class="report-list" id="report-list" aria-live="polite"></div>
+            </section>
+            <section class="panel report-preview-panel">
+              <div class="report-preview-heading">
+                <div><h2 id="report-preview-title">Report preview</h2><p id="report-preview-meta">Select a report to preview it here.</p></div>
+                <a class="button secondary hidden" id="report-download" href="#" download>Download HTML</a>
+              </div>
+              <div class="report-preview-empty" id="report-preview-empty"><span>▣</span><strong>No report selected</strong><small>Choose a report from the list to view it in the console.</small></div>
+              <iframe class="report-frame hidden" id="report-frame" title="SOC report preview" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe>
+            </section>
+          </div>
+        </section>
+
         <section class="panel activity-panel" id="activity-panel">
           <div class="activity-header">
             <div><div class="activity-title"><span class="activity-indicator"></span><h2>Operation activity</h2></div><p id="job-status">Waiting for an operation.</p></div>
@@ -191,7 +212,7 @@
     <p id="report-prompt-message">An HTML report was generated. Would you like to open it?</p>
     <div class="report-dialog-actions">
       <button class="button secondary" id="report-stay" type="button">Stay here</button>
-      <a class="button primary" id="report-open" href="#" target="_blank" rel="noopener">Open report</a>
+      <button class="button primary" id="report-open" type="button">Open in app</button>
     </div>
   </dialog>
   <script src="{{ url_for('static', filename='app.js') }}" defer></script>

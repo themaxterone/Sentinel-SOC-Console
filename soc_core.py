@@ -521,6 +521,158 @@ def check_single_key(key_index, api_key):
 # =========================================================================
 # HTML & REPORT GENERATORS
 # =========================================================================
+REPORT_THEME_CSS = """
+:root {
+    color-scheme: light;
+    --bg-primary: #f5f7fb;
+    --surface: #ffffff;
+    --text-main: #172337;
+    --text-muted: #536176;
+    --border-color: #e6eaf1;
+    --primary: #3478f6;
+    --success: #159570;
+    --danger: #d54d58;
+    --warning: #c47a25;
+    --success-bg: #e7f6f0;
+    --danger-bg: #fdecef;
+    --warning-bg: #fff3e4;
+    --info-bg: #eaf1ff;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    padding: 30px;
+    background: var(--bg-primary);
+    color: var(--text-main);
+    font: 14px/1.5 "Segoe UI", "Segoe UI Variable", Arial, sans-serif;
+}
+.header, .controls, .table-container, .section-card, .query-box {
+    max-width: 1440px;
+    margin-right: auto;
+    margin-left: auto;
+}
+.header {
+    align-items: flex-end;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+.header h1 { font-size: 25px; font-weight: 800; letter-spacing: -.6px; }
+.header p { color: var(--text-muted); font-size: 12px; }
+.stats { gap: 11px; }
+.stat-card {
+    min-width: 95px;
+    padding: 13px 17px;
+    border: 1px solid var(--border-color);
+    border-radius: 11px;
+    background: var(--surface);
+    box-shadow: 0 8px 26px rgba(19, 38, 72, .045);
+}
+.stat-card .num { font-size: 22px; }
+.stat-card .label { color: #8490a2; font-size: 9px; letter-spacing: .5px; }
+.section-card, .table-container {
+    overflow: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: 0 8px 26px rgba(19, 38, 72, .045);
+}
+.section-card { margin-bottom: 19px; padding: 17px; }
+.section-title { font-size: 14px; }
+.controls { gap: 10px; }
+.search-box {
+    min-height: 38px;
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    color: var(--text-main);
+    background: var(--surface);
+}
+.search-box:focus { border-color: var(--primary); }
+.filter-btn, .filter-btn-sm {
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    color: var(--text-muted);
+    background: var(--surface);
+    transition: .15s ease;
+}
+.filter-btn { padding: 8px 13px; font-size: 10px; }
+.filter-btn-sm { font-size: 9px; }
+.filter-btn:hover, .filter-btn-sm:hover { border-color: var(--primary); }
+.filter-btn.active, .filter-btn-sm:hover {
+    border-color: var(--primary);
+    color: #fff;
+    background: var(--primary);
+}
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+thead { position: sticky; top: 0; z-index: 2; background: #f0f3f9; }
+th {
+    padding: 11px 13px;
+    border-bottom: 1px solid var(--border-color);
+    color: #536176;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .35px;
+    text-transform: uppercase;
+}
+td { padding: 11px 13px; border-bottom: 1px solid var(--border-color); }
+tr:hover { background: #f8faff; }
+.badge { border-radius: 6px; font-size: 9px; }
+.badge-success { color: var(--success); background: var(--success-bg); }
+.badge-danger { color: var(--danger); background: var(--danger-bg); }
+.badge-warning { color: var(--warning); background: var(--warning-bg); }
+.badge-info { color: var(--primary); background: var(--info-bg); }
+.failure-desc { border-radius: 5px; }
+.progress-bar-bg { background: #e9edf4; }
+.category-tag { border: 1px solid var(--border-color); border-radius: 5px; background: #f0f3f9; }
+.query-box { border-radius: 9px; }
+.font-mono { font-family: Consolas, "Cascadia Code", monospace; }
+.text-muted { color: #8490a2; }
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --bg-primary: #0c1421;
+    --surface: #121e2e;
+    --text-main: #e7edf7;
+    --text-muted: #a7b3c5;
+    --border-color: #26364c;
+    --primary: #6a9cff;
+    --success: #58c29f;
+    --danger: #f17d87;
+    --warning: #edbd69;
+    --success-bg: #183a35;
+    --danger-bg: #422832;
+    --warning-bg: #44351f;
+    --info-bg: #1a2c49;
+}
+html[data-theme="dark"] thead { background: #1b2a40; }
+html[data-theme="dark"] th { color: #c2cede; }
+html[data-theme="dark"] tr:hover { background: #172437; }
+html[data-theme="dark"] .category-tag { color: #c2cede; background: #1b2a40; }
+html[data-theme="dark"] .progress-bar-bg { background: #26364c; }
+@media (max-width: 760px) {
+    body { padding: 16px; }
+    .header { align-items: flex-start; }
+    .stats { width: 100%; }
+}
+"""
+
+
+def _apply_report_theme(document):
+    theme_script = """<script>
+(() => {
+    const root = document.documentElement;
+    const setTheme = (theme) => {
+        if (theme === "light" || theme === "dark") root.dataset.theme = theme;
+    };
+    setTheme(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    window.addEventListener("message", (event) => {
+        if (event.source === window.parent && event.data && event.data.type === "soc-theme") {
+            setTheme(event.data.theme);
+        }
+    });
+})();
+</script>"""
+    return document.replace("</head>", f"<style>{REPORT_THEME_CSS}</style>{theme_script}</head>", 1)
+
+
 def export_signins_html(filepath, title_label, days, records, user_summaries, use_abuseip=True):
     total = len(records)
     success_count = sum(1 for r in records if r["is_success"])
@@ -754,6 +906,7 @@ def export_signins_html(filepath, title_label, days, records, user_summaries, us
     </script>
 </body>
 </html>"""
+    template = _apply_report_theme(template)
     with open(filepath, mode="w", encoding="utf-8") as f:
         f.write(template)
 
@@ -905,6 +1058,7 @@ def export_sentinel_html(filepath, engine_label, workspace_label, query_text, co
     </script>
 </body>
 </html>"""
+    template = _apply_report_theme(template)
     with open(filepath, mode="w", encoding="utf-8") as f:
         f.write(template)
 
@@ -1048,6 +1202,7 @@ def export_ipsearcher_html(filepath, results, skipped_intigriti_count=0, skipped
     </script>
 </body>
 </html>"""
+    template = _apply_report_theme(template)
     with open(filepath, mode="w", encoding="utf-8") as f:
         f.write(template)
 

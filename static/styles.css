@@ -258,12 +258,32 @@ h1 { margin: 7px 0 7px; font: 800 25px Manrope, "Segoe UI", sans-serif; letter-s
 .footer-version { color: #aab4c2; }
 .hidden { display: none !important; }
 
+.report-layout { display: grid; grid-template-columns: minmax(240px, 310px) minmax(0, 1fr); align-items: start; gap: 14px; }
+.report-library, .report-preview-panel { min-width: 0; overflow: hidden; }
+.report-library-heading, .report-preview-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 17px; border-bottom: 1px solid var(--line); }
+.report-library-heading h2, .report-preview-heading h2 { margin: 0; font: 700 13px "Segoe UI", sans-serif; }
+.report-library-heading p, .report-preview-heading p { margin: 4px 0 0; color: var(--muted); font-size: 9px; }
+.report-list { display: flex; flex-direction: column; gap: 7px; max-height: 660px; overflow: auto; padding: 10px; }
+.report-item { width: 100%; padding: 10px 11px; border: 1px solid transparent; border-radius: 8px; color: var(--text); background: transparent; text-align: left; transition: .15s ease; }
+.report-item:hover { border-color: var(--line); background: var(--surface-2); }
+.report-item.selected { border-color: color-mix(in srgb, var(--blue) 40%, var(--line)); background: var(--blue-tint); }
+.report-item strong { display: block; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.report-item small { display: block; margin-top: 5px; color: var(--muted); font-size: 8px; }
+.report-list-empty { padding: 20px 10px; color: var(--muted); font-size: 10px; line-height: 1.6; text-align: center; }
+.report-preview-panel { display: flex; min-height: 520px; flex-direction: column; }
+.report-preview-heading .button { flex: 0 0 auto; }
+.report-preview-empty { display: flex; min-height: 430px; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 7px; padding: 20px; color: var(--muted); text-align: center; }
+.report-preview-empty > span { color: var(--blue); font-size: 24px; }
+.report-preview-empty strong { color: var(--text-2); font-size: 11px; }
+.report-preview-empty small { font-size: 9px; }
+.report-frame { display: block; width: 100%; min-height: 72vh; flex: 1; border: 0; background: var(--page); }
 @media (max-width: 1100px) {
   .sidebar { width: 220px; flex-basis: 220px; }
   .topbar { padding: 0 25px; }
   .page-content { padding: 28px 25px 18px; }
   .footer { padding-right: 25px; padding-left: 25px; }
   .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .report-layout { grid-template-columns: minmax(200px, 260px) minmax(0, 1fr); }
 }
 @media (max-width: 760px) {
   .sidebar { width: 64px; flex-basis: 64px; padding: 17px 8px 12px; }
@@ -297,6 +317,12 @@ h1 { margin: 7px 0 7px; font: 800 25px Manrope, "Segoe UI", sans-serif; letter-s
   .key-remaining { grid-column: span 2; text-align: left; }
   .activity-panel { padding: 15px 12px 12px; }
   .artifacts { align-items: flex-start; flex-direction: column; }
+  .report-layout { grid-template-columns: 1fr; }
+  .report-list { max-height: 230px; }
+  .report-preview-panel { min-height: 420px; }
+  .report-preview-heading { align-items: flex-start; flex-direction: column; }
+  .report-preview-heading .button { width: 100%; }
+  .report-frame { min-height: 65vh; }
   .footer { padding: 10px 15px 15px; font-size: 8px; }
 }
 @media (max-width: 420px) {
