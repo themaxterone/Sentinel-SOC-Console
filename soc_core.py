@@ -38,7 +38,7 @@ AZURE_CLI_CLIENT_ID = "04b07795-8ddb-461a-bbee-02f9e1bf7b46"
 AUTHORITY = "https://login.microsoftonline.com/organizations"
 
 # Default Microsoft Sentinel Workspace ID (GUID)
-DEFAULT_SENTINEL_WORKSPACE_ID = "e9b01d76-96a7-4acf-843b-5e8ba5640cb1"
+DEFAULT_SENTINEL_WORKSPACE_ID = "YOUR_SENTINEL_WORKSPACE_ID"
 
 DIR_SIGNINS = str(DATA_ROOT / "signInsLogs")
 DIR_ABUSEIP = str(DATA_ROOT / "abuseIpLogs")
@@ -71,16 +71,14 @@ def get_output_dir(folder, user_id=None):
     return directory
 
 # Intigriti Access Token (Company / Researcher IP Verification)
-INTIGRITI_ACCESS_TOKEN = "4F38FC2441D5912C1B42CFA2BCDA5464321E8E0083951880E84716D44664C9D7-1"
+INTIGRITI_ACCESS_TOKEN = "YOUR_INTIGRITI_ACCESS_TOKEN"
 INTIGRITI_API_URL = "https://api.intigriti.com/external/company/v2/iplookup"
 
 # AbuseIPDB API Keys Pool
 ABUSEIPDB_API_KEYS = [
-    "8b755fbc1c5d99c7c91a17d0d3985c71c8ec7112123a9d52955b025beddaf2f93e1f406c6de63ba6",
-    "79355356a82c71fcdd7f39bfa3efef060bd636c242d54946b17ef2e28e7740868cd8c393ccb61077",
-    "23e158b28e1c2c150e523a2ed0239d69b767b871ff6a4ccd9da5dd39f1d80f05b6fb5634a1f45619", #Trash1
-    "111718fff330b38f2cfa1756e367917a0501e2aff07004a2dc066410dbac209c9741600452b8c7ca", #Proton3
-    "c63cc76859b06be105d814f3cdbff749e91a2a7a6ce45e40b18069a7066a8de238278cd6cc63ae1f"  #Proton3
+    "YOUR_API_KEY_1",
+    "YOUR_API_KEY_2",
+    "YOUR_API_KEY_3"
 ]
 # =========================================================================
 
