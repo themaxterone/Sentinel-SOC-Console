@@ -1,6 +1,7 @@
 import concurrent.futures
 import csv
 from datetime import datetime, timedelta, timezone
+import hashlib
 import html
 import ipaddress
 import json
@@ -12,6 +13,14 @@ import time
 import msal
 import requests
 import urllib3
+from auth import (
+    AUTH_MODE,
+    AZURE_ARM_SCOPES,
+    DATA_ROOT,
+    GRAPH_SCOPES,
+    LOG_ANALYTICS_SCOPES,
+    current_job_user_id,
+)
 
 # Suppress SSL warnings in corporate environments with proxy inspection
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -29,38 +38,49 @@ AZURE_CLI_CLIENT_ID = "04b07795-8ddb-461a-bbee-02f9e1bf7b46"
 AUTHORITY = "https://login.microsoftonline.com/organizations"
 
 # Default Microsoft Sentinel Workspace ID (GUID)
-DEFAULT_SENTINEL_WORKSPACE_ID = "Insert your ID Here"
+DEFAULT_SENTINEL_WORKSPACE_ID = "e9b01d76-96a7-4acf-843b-5e8ba5640cb1"
 
-GRAPH_SCOPES = [
-    "https://graph.microsoft.com/AuditLog.Read.All",
-    "https://graph.microsoft.com/IdentityRiskyUser.Read.All",
-    "https://graph.microsoft.com/User.Read.All",
-    "https://graph.microsoft.com/ThreatHunting.Read.All"
-]
-
-LOG_ANALYTICS_SCOPES = [
-    "https://api.loganalytics.io/.default"
-]
-
-AZURE_ARM_SCOPES = [
-    "https://management.azure.com/.default"
-]
-
-DIR_SIGNINS = "signInsLogs"
-DIR_ABUSEIP = "abuseIpLogs"
-DIR_SENTINEL = "sentinelLogs"
+DIR_SIGNINS = str(DATA_ROOT / "signInsLogs")
+DIR_ABUSEIP = str(DATA_ROOT / "abuseIpLogs")
+DIR_SENTINEL = str(DATA_ROOT / "sentinelLogs")
 
 os.makedirs(DIR_SIGNINS, exist_ok=True)
 os.makedirs(DIR_ABUSEIP, exist_ok=True)
 os.makedirs(DIR_SENTINEL, exist_ok=True)
 
+OUTPUT_DIRECTORIES = {
+    "signins": DIR_SIGNINS,
+    "abuseip": DIR_ABUSEIP,
+    "sentinel": DIR_SENTINEL,
+}
+
+
+def get_output_dir(folder, user_id=None):
+    base_directory = OUTPUT_DIRECTORIES.get(folder)
+    if base_directory is None:
+        raise ValueError(f"Unknown report folder: {folder}")
+    if AUTH_MODE == "entra":
+        owner_id = user_id if user_id is not None else current_job_user_id()
+        if not owner_id:
+            raise RuntimeError("A signed-in user is required to access report storage.")
+        owner_key = hashlib.sha256(owner_id.encode("utf-8")).hexdigest()
+        directory = os.path.join(str(DATA_ROOT), "users", owner_key, os.path.basename(base_directory))
+    else:
+        directory = base_directory
+    os.makedirs(directory, exist_ok=True)
+    return directory
+
 # Intigriti Access Token (Company / Researcher IP Verification)
-INTIGRITI_ACCESS_TOKEN = os.environ.get("INTIGRITI_ACCESS_TOKEN", "YOUR_INTIGRITI_ACCESS_TOKEN")
+INTIGRITI_ACCESS_TOKEN = "4F38FC2441D5912C1B42CFA2BCDA5464321E8E0083951880E84716D44664C9D7-1"
 INTIGRITI_API_URL = "https://api.intigriti.com/external/company/v2/iplookup"
 
 # AbuseIPDB API Keys Pool
 ABUSEIPDB_API_KEYS = [
-    "23e158b28e1c2c150e523a2ed0239d69b767b871ff6a4ccd9da5dd39f1d80f05b6fb5634a1f45619",
+    "8b755fbc1c5d99c7c91a17d0d3985c71c8ec7112123a9d52955b025beddaf2f93e1f406c6de63ba6",
+    "79355356a82c71fcdd7f39bfa3efef060bd636c242d54946b17ef2e28e7740868cd8c393ccb61077",
+    "23e158b28e1c2c150e523a2ed0239d69b767b871ff6a4ccd9da5dd39f1d80f05b6fb5634a1f45619", #Trash1
+    "111718fff330b38f2cfa1756e367917a0501e2aff07004a2dc066410dbac209c9741600452b8c7ca", #Proton3
+    "c63cc76859b06be105d814f3cdbff749e91a2a7a6ce45e40b18069a7066a8de238278cd6cc63ae1f"  #Proton3
 ]
 # =========================================================================
 
@@ -124,6 +144,12 @@ def rotate_api_key(log_callback):
 def get_access_token(log_callback, scopes=None, client_id=None):
     target_scopes = scopes if scopes is not None else GRAPH_SCOPES
     target_client = client_id if client_id is not None else CLIENT_ID
+
+    if AUTH_MODE == "entra":
+        from auth import acquire_user_token
+        token = acquire_user_token(current_job_user_id(), target_scopes)
+        log_callback("[+] Using the signed-in user's Microsoft authorization.", "success")
+        return token
 
     if target_client not in MSAL_APPS:
         MSAL_APPS[target_client] = msal.PublicClientApplication(target_client, authority=AUTHORITY)
@@ -522,6 +548,7 @@ def check_single_key(key_index, api_key):
 # HTML & REPORT GENERATORS
 # =========================================================================
 REPORT_THEME_CSS = """
+/* Sentinel SOC report theme v3 */
 :root {
     color-scheme: light;
     --bg-primary: #f5f7fb;
@@ -645,8 +672,56 @@ html[data-theme="dark"] {
 html[data-theme="dark"] thead { background: #1b2a40; }
 html[data-theme="dark"] th { color: #c2cede; }
 html[data-theme="dark"] tr:hover { background: #172437; }
+html[data-theme="dark"] .summary-table th {
+    color: #c2cede;
+    background: #1b2a40;
+    border-bottom-color: #26364c;
+}
+html[data-theme="dark"] .summary-table td {
+    color: var(--text-main);
+    background: var(--surface);
+    border-bottom-color: #26364c;
+}
+html[data-theme="dark"] .summary-table tbody tr:hover td {
+    background: #172437;
+}
+html .signins-table-container {
+    max-height: 1200px;
+}
 html[data-theme="dark"] .category-tag { color: #c2cede; background: #1b2a40; }
 html[data-theme="dark"] .progress-bar-bg { background: #26364c; }
+html[data-theme="dark"] .search-box,
+html[data-theme="dark"] .filter-btn,
+html[data-theme="dark"] .filter-btn-sm {
+    color: var(--text-main);
+    background: var(--surface);
+}
+html[data-theme="dark"] .filter-btn:hover,
+html[data-theme="dark"] .filter-btn-sm:hover {
+    color: #ffffff;
+    background: #25395b;
+}
+html[data-theme="dark"] .filter-btn.active {
+    color: #ffffff;
+    background: var(--primary);
+}
+html[data-theme="dark"] .btn-filters {
+    color: var(--text-main);
+}
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .table-container,
+html[data-theme="dark"] .section-card,
+html[data-theme="dark"] .query-box {
+    color: var(--text-main);
+    background: var(--surface);
+    box-shadow: 0 8px 26px rgba(0, 0, 0, .14);
+}
+html[data-theme="dark"] .category-tag {
+    border-color: #26364c;
+}
+html[data-theme="light"] thead {
+    background: #f0f3f9;
+}
 @media (max-width: 760px) {
     body { padding: 16px; }
     .header { align-items: flex-start; }
@@ -858,7 +933,7 @@ def export_signins_html(filepath, title_label, days, records, user_summaries, us
         </div>
     </div>
 
-    <div class="table-container">
+    <div class="table-container signins-table-container">
         <table id="logsTable">
             <thead>
                 <tr>

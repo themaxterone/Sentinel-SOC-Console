@@ -1,6 +1,7 @@
 import csv
 import os
 import time
+import uuid
 from datetime import datetime, timedelta, timezone
 
 import requests
@@ -9,9 +10,6 @@ from soc_core import (
     AZURE_CLI_CLIENT_ID,
     CLIENT_ID,
     DEFAULT_SENTINEL_WORKSPACE_ID,
-    DIR_ABUSEIP,
-    DIR_SENTINEL,
-    DIR_SIGNINS,
     ENTRA_ERRORS,
     GRAPH_SCOPES,
     GraphRateLimitError,
@@ -26,6 +24,7 @@ from soc_core import (
     export_signins_html,
     extract_workspace_guid,
     fetch_signins_from_sentinel,
+    get_output_dir,
     get_access_token,
     graph_get_with_retry,
     is_public_ip,
@@ -336,23 +335,23 @@ class SOCWorkers:
                 return
 
             status_lbl.configure(text="Generating single unified CSV and HTML...")
-            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            ts = f"{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_{uuid.uuid4().hex[:8]}"
             mode_tag = "intel" if use_abuse else "std"
 
             if mode == "single":
                 title_label = target_users[0]
                 slug = target_users[0].replace("@", "_").replace(".", "_")
-                csv_file = os.path.join(DIR_SIGNINS, f"signins_{mode_tag}_{slug}_{days}d_{ts}.csv")
-                html_file = os.path.join(DIR_SIGNINS, f"signins_{mode_tag}_{slug}_{days}d_{ts}.html")
+                csv_file = os.path.join(get_output_dir("signins"), f"signins_{mode_tag}_{slug}_{days}d_{ts}.csv")
+                html_file = os.path.join(get_output_dir("signins"), f"signins_{mode_tag}_{slug}_{days}d_{ts}.html")
             elif mode.startswith("risky_"):
                 lvl_tag = mode.replace("risky_", "").upper()
                 title_label = f"{lvl_tag}-RISK Users Audit ({total_accounts} Accounts)"
-                csv_file = os.path.join(DIR_SIGNINS, f"signins_{mode_tag}_RISKY_{lvl_tag}_{total_accounts}accounts_{days}d_{ts}.csv")
-                html_file = os.path.join(DIR_SIGNINS, f"signins_{mode_tag}_RISKY_{lvl_tag}_{total_accounts}accounts_{days}d_{ts}.html")
+                csv_file = os.path.join(get_output_dir("signins"), f"signins_{mode_tag}_RISKY_{lvl_tag}_{total_accounts}accounts_{days}d_{ts}.csv")
+                html_file = os.path.join(get_output_dir("signins"), f"signins_{mode_tag}_RISKY_{lvl_tag}_{total_accounts}accounts_{days}d_{ts}.html")
             else:
                 title_label = f"Bulk Audit ({total_accounts} Accounts)"
-                csv_file = os.path.join(DIR_SIGNINS, f"signins_{mode_tag}_bulk_{total_accounts}accounts_{days}d_{ts}.csv")
-                html_file = os.path.join(DIR_SIGNINS, f"signins_{mode_tag}_bulk_{total_accounts}accounts_{days}d_{ts}.html")
+                csv_file = os.path.join(get_output_dir("signins"), f"signins_{mode_tag}_bulk_{total_accounts}accounts_{days}d_{ts}.csv")
+                html_file = os.path.join(get_output_dir("signins"), f"signins_{mode_tag}_bulk_{total_accounts}accounts_{days}d_{ts}.html")
 
             with open(csv_file, mode="w", newline="", encoding="utf-8-sig") as f:
                 fields = ["Date and Time", "User", "User Display", "APP", "Status", "ErrorCode", "Failure Meaning", "IP", "Location", "OS", "Device Browser", "Conditional Access"]
@@ -515,10 +514,10 @@ class SOCWorkers:
                     if idx % 10 == 0 or idx == total_rows:
                         self.prog_sentinel.set(0.6 + (0.3 * (idx / total_rows)))
 
-            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            ts = f"{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_{uuid.uuid4().hex[:8]}"
             eng_slug = "xdr_graph" if engine == "Defender XDR (Graph)" else "sentinel_ws"
-            csv_file = os.path.join(DIR_SENTINEL, f"{eng_slug}_query_{ts}.csv")
-            html_file = os.path.join(DIR_SENTINEL, f"{eng_slug}_query_{ts}.html")
+            csv_file = os.path.join(get_output_dir("sentinel"), f"{eng_slug}_query_{ts}.csv")
+            html_file = os.path.join(get_output_dir("sentinel"), f"{eng_slug}_query_{ts}.html")
 
             csv_cols = list(columns)
             if use_abuse:
@@ -729,10 +728,10 @@ class SOCWorkers:
                 messagebox.showinfo("Complete", f"Finished checking {total_ips} IP(s).\nNo IPs met the export criteria.")
                 return
 
-            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-            html_file = os.path.join(DIR_ABUSEIP, f"abuseipdb_{source_slug}_{ts}.html")
-            txt_block_file = os.path.join(DIR_ABUSEIP, f"blocklist_{source_slug}_{ts}.txt")
-            csv_ext_file = os.path.join(DIR_ABUSEIP, f"extended_{source_slug}_{ts}.csv")
+            ts = f"{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}_{uuid.uuid4().hex[:8]}"
+            html_file = os.path.join(get_output_dir("abuseip"), f"abuseipdb_{source_slug}_{ts}.html")
+            txt_block_file = os.path.join(get_output_dir("abuseip"), f"blocklist_{source_slug}_{ts}.txt")
+            csv_ext_file = os.path.join(get_output_dir("abuseip"), f"extended_{source_slug}_{ts}.csv")
 
             export_ipsearcher_html(
                 html_file,
